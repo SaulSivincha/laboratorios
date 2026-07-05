@@ -1,0 +1,36 @@
+graph TD
+    %% Nodos de Decisión
+    A[Court surface]
+    E[Match type]
+    G[Best Effort]
+
+    %% Nodos Hoja (Resultados)
+    B([Federer])
+    C([Federer])
+    D([Nadal])
+    F([Nadal])
+    H([Federer])
+    I([Nadal])
+
+    %% Conexiones Raíz
+    A -->|Grass| B
+    A -->|Hard| C
+    A -->|Mixed| D
+    A -->|Clay| E
+
+    %% Conexiones Nivel 2
+    E -->|Master| F
+    E -->|Grand slam| G
+
+    %% Conexiones Nivel 3
+    G -->|1| H
+    G -->|0| I
+
+    %% Estilos de Nodos
+    classDef decision fill:#ECEFF1,stroke:#455A64,stroke-width:2px,font-weight:bold;
+    classDef federer fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,font-weight:bold;
+    classDef nadal fill:#FFEBEE,stroke:#C62828,stroke-width:2px,font-weight:bold;
+
+    class A,E,G decision;
+    class B,C,H federer;
+    class D,F,I nadal;
