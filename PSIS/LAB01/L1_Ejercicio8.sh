@@ -1,0 +1,1 @@
+export PATH=$PATH":~/ruta_carpeta_ejercicios"
