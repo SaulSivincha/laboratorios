@@ -1,0 +1,9 @@
+class DocenteEjercicio05
+
+functions
+
+public evaluar : () -> bool
+evaluar() ==
+  exists x in set elems [80, 100, 120, 90, 250] & x mod 5 = 0;
+
+end DocenteEjercicio05

@@ -1,0 +1,18 @@
+class Ejercicio06
+
+functions
+
+public esPacienteRiesgo : seq of int -> bool
+esPacienteRiesgo(lecturas) ==
+  exists lectura in set elems lecturas & lectura < 90;
+
+public casos : () -> seq of bool
+casos() ==
+  [
+    esPacienteRiesgo([95, 96, 97, 95, 91]),
+    esPacienteRiesgo([95, 96, 97, 95, 89]),
+    esPacienteRiesgo([95, 96, 97, 95, 90]),
+    esPacienteRiesgo([86, 85, 84, 90, 91])
+  ];
+
+end Ejercicio06

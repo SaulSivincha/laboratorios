@@ -1,0 +1,9 @@
+class DocenteEjercicio06
+
+functions
+
+public evaluar : () -> bool
+evaluar() ==
+  forall x in set elems [80, 100, 120, 90, 250] & x mod 2 = 0;
+
+end DocenteEjercicio06
