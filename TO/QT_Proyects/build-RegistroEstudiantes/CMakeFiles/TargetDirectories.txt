@@ -1,0 +1,9 @@
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/RegistroEstudiantes.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/edit_cache.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/rebuild_cache.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/list_install_components.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/install.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/install/local.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/install/strip.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/RegistroEstudiantes_autogen_timestamp_deps.dir
+/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/CMakeFiles/RegistroEstudiantes_autogen.dir

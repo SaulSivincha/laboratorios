@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_RegistroEstudiantes_FILE /home/sauls/Dev/laboratorios/TO/QT_Proyects/RegistroEstudiantes/build/Desktop_Debug/RegistroEstudiantes)
+set(__QT_DEPLOY_TARGET_RegistroEstudiantes_TYPE EXECUTABLE)

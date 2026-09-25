@@ -1,0 +1,16 @@
+# ninja log v7
+2	305	1790341167639081111	RegistroEstudiantes_autogen/timestamp	9eef1227ca24fefc
+2	305	1790341167639081111	RegistroEstudiantes_autogen/mocs_compilation.cpp	9eef1227ca24fefc
+2	305	1790341167639081111	/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/RegistroEstudiantes_autogen/timestamp	9eef1227ca24fefc
+2	305	1790341167639081111	/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/RegistroEstudiantes_autogen/mocs_compilation.cpp	9eef1227ca24fefc
+306	2260	1790341167654082741	CMakeFiles/RegistroEstudiantes.dir/RegistroEstudiantes_autogen/mocs_compilation.cpp.o	13414f6de88620e7
+306	2351	1790341167655076401	CMakeFiles/RegistroEstudiantes.dir/main.cpp.o	de0c5bbaa2c09771
+2351	2677	1790341169699091041	CMakeFiles/RegistroEstudiantes.dir/Estudiante.cpp.o	23400658231338a8
+2260	5244	1790341169608090602	CMakeFiles/RegistroEstudiantes.dir/VentanaRegistro.cpp.o	5f57358acbe76cee
+5244	5626	1790341172592104986	RegistroEstudiantes	4af7dfaf062d6187
+5	72	1790342228200206746	RegistroEstudiantes_autogen/timestamp	9eef1227ca24fefc
+5	72	1790342228200206746	RegistroEstudiantes_autogen/mocs_compilation.cpp	9eef1227ca24fefc
+5	72	1790342228200206746	/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/RegistroEstudiantes_autogen/timestamp	9eef1227ca24fefc
+5	72	1790342228200206746	/home/sauls/Dev/laboratorios/TO/QT_Proyects/build-RegistroEstudiantes/RegistroEstudiantes_autogen/mocs_compilation.cpp	9eef1227ca24fefc
+72	2937	1790342228267207070	CMakeFiles/RegistroEstudiantes.dir/VentanaRegistro.cpp.o	5f57358acbe76cee
+2937	3285	1790342231132220928	RegistroEstudiantes	4af7dfaf062d6187
