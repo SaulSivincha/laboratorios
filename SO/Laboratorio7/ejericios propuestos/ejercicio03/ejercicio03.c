@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define NUM_HILOS 10
-#define INCREMENTOS 1000000
+#define INCREMENTOS 10000000
 
 static int correos = 0;
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
