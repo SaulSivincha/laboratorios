@@ -1,5 +1,5 @@
 # Ejercicios propuestos
 
-- `ejercicio01`: suma de un arreglo con cuatro threads.
-- `ejercicio02`: comparación de tiempos entre 100 threads y 100 procesos.
-- `ejercicio03`: comparación entre el identificador del hilo principal y un hilo creado.
+- `ejercicio01`: acceso a un contador compartido protegido por un mutex.
+- `ejercicio02`: modificación del ejercicio resuelto 10 para sincronizar 4 threads.
+- `ejercicio03`: modificación del ejercicio resuelto 9 para sincronizar 10 threads.

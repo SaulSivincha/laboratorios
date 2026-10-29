@@ -3,59 +3,47 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAMANIO 100
-#define NUM_HILOS 4
+#define NTHREADS 4
+#define REPETICIONES 100000
 
-typedef struct {
-    const int *arreglo;
-    int inicio;
-    int fin;
-    long suma_parcial;
-} trabajo_t;
+static int contador = 0;
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void *sumar_parte(void *arg)
+static void *hilo(void *arg)
 {
-    trabajo_t *trabajo = arg;
-    trabajo->suma_parcial = 0;
-    for (int i = trabajo->inicio; i < trabajo->fin; i++) {
-        trabajo->suma_parcial += trabajo->arreglo[i];
+    const int incremento = *(const int *)arg;
+
+    for (int j = 0; j < REPETICIONES; j++) {
+        pthread_mutex_lock(&mutex);
+        contador += incremento;
+        pthread_mutex_unlock(&mutex);
     }
     return NULL;
 }
 
 int main(void)
 {
-    int arreglo[TAMANIO];
-    pthread_t hilos[NUM_HILOS];
-    trabajo_t trabajos[NUM_HILOS];
-    long suma_total = 0;
+    pthread_t hilos[NTHREADS];
+    int incrementos[NTHREADS];
+    const int esperado = REPETICIONES * (NTHREADS * (NTHREADS - 1) / 2);
 
-    for (int i = 0; i < TAMANIO; i++) {
-        arreglo[i] = i + 1;
-    }
-
-    for (int i = 0; i < NUM_HILOS; i++) {
-        trabajos[i] = (trabajo_t){
-            .arreglo = arreglo,
-            .inicio = i * (TAMANIO / NUM_HILOS),
-            .fin = (i + 1) * (TAMANIO / NUM_HILOS),
-            .suma_parcial = 0,
-        };
-        int error = pthread_create(&hilos[i], NULL, sumar_parte, &trabajos[i]);
+    for (int i = 0; i < NTHREADS; i++) {
+        incrementos[i] = i;
+        int error = pthread_create(&hilos[i], NULL, hilo, &incrementos[i]);
         if (error != 0) {
             fprintf(stderr, "pthread_create: %s\n", strerror(error));
             for (int j = 0; j < i; j++) {
                 pthread_join(hilos[j], NULL);
             }
+            pthread_mutex_destroy(&mutex);
             return EXIT_FAILURE;
         }
     }
-
-    for (int i = 0; i < NUM_HILOS; i++) {
+    for (int i = 0; i < NTHREADS; i++) {
         pthread_join(hilos[i], NULL);
-        printf("Hilo %d: suma parcial = %ld\n", i + 1, trabajos[i].suma_parcial);
-        suma_total += trabajos[i].suma_parcial;
     }
-    printf("Suma total del arreglo: %ld\n", suma_total);
-    return suma_total == 5050 ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    printf("Hilo principal, contador = %d (esperado: %d)\n", contador, esperado);
+    pthread_mutex_destroy(&mutex);
+    return contador == esperado ? EXIT_SUCCESS : EXIT_FAILURE;
 }
