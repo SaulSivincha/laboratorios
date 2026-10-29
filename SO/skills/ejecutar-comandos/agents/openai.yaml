@@ -1,0 +1,3 @@
+interface:
+  display_name: "Ejecutar Comandos"
+  short_description: "Ejecuta órdenes visibles una por una en Kitty"
