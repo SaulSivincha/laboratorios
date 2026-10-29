@@ -1,81 +1,78 @@
-#include <pthread.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <pthread.h>
 
-#define NUM_HILOS 4
-#define VECES_POR_HILO 21000
+// Cada thread cuenta TIMES_TO_COUNT veces
+#define TIMES_TO_COUNT 21000
+#define NUM_THREADS 4
 
-typedef struct {
-    pthread_mutex_t mutex;
-    unsigned int cuenta;
-} contador_t;
+#define NC "\033[0m"
+#define YELLOW "\033[33m"
+#define BYELLOW "\033[1;33m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
 
-typedef struct {
-    contador_t *contador;
-    int numero;
-} trabajo_t;
+// Esta estructura contiene el recuento así como el mutex.
+typedef struct s_counter {
+    pthread_mutex_t count_mutex;
+    unsigned int count;
+} t_counter;
 
-static void *contar(void *arg)
+void *thread_routine(void *data)
 {
-    trabajo_t *trabajo = arg;
+    pthread_t tid;
+    t_counter *counter;
+    unsigned int i;
 
-    printf("[Hilo %d | ID %lu] Inicia %d incrementos.\n", trabajo->numero,
-           (unsigned long)pthread_self(), VECES_POR_HILO);
+    tid = pthread_self();
+    counter = (t_counter *)data;
+    pthread_mutex_lock(&counter->count_mutex);
+    printf("%sThread [%lu]: contador del thread empieza = %u.%s\n", YELLOW,
+           (unsigned long)tid, counter->count, NC);
+    pthread_mutex_unlock(&counter->count_mutex);
 
-    for (int i = 0; i < VECES_POR_HILO; i++) {
-        pthread_mutex_lock(&trabajo->contador->mutex);
-        trabajo->contador->cuenta++;
-        pthread_mutex_unlock(&trabajo->contador->mutex);
+    i = 0;
+    while (i < TIMES_TO_COUNT) {
+        pthread_mutex_lock(&counter->count_mutex);
+        counter->count++;
+        pthread_mutex_unlock(&counter->count_mutex);
+        i++;
     }
-    printf("[Hilo %d] Trabajo finalizado.\n", trabajo->numero);
-    return NULL;
-}
 
-static double segundos_transcurridos(struct timespec inicio, struct timespec fin)
-{
-    return (fin.tv_sec - inicio.tv_sec) +
-           (fin.tv_nsec - inicio.tv_nsec) / 1000000000.0;
+    pthread_mutex_lock(&counter->count_mutex);
+    printf("%sThread [%lu]: Contador final = %u.%s\n", BYELLOW,
+           (unsigned long)tid, counter->count, NC);
+    pthread_mutex_unlock(&counter->count_mutex);
+    return NULL;
 }
 
 int main(void)
 {
-    contador_t contador = {.cuenta = 0};
-    pthread_t hilos[NUM_HILOS];
-    trabajo_t trabajos[NUM_HILOS];
-    struct timespec inicio, fin;
-    int error = pthread_mutex_init(&contador.mutex, NULL);
-    if (error != 0) {
-        fprintf(stderr, "pthread_mutex_init: %s\n", strerror(error));
-        return EXIT_FAILURE;
-    }
+    pthread_t tid[NUM_THREADS];
+    t_counter counter;
 
-    puts("=== Ejercicio 2: cuatro threads con contador protegido ===");
-    printf("Threads: %d | Incrementos por hilo: %d | Total esperado: %d\n",
-           NUM_HILOS, VECES_POR_HILO, NUM_HILOS * VECES_POR_HILO);
-    clock_gettime(CLOCK_MONOTONIC, &inicio);
-    for (int i = 0; i < NUM_HILOS; i++) {
-        trabajos[i] = (trabajo_t){.contador = &contador, .numero = i + 1};
-        error = pthread_create(&hilos[i], NULL, contar, &trabajos[i]);
-        if (error != 0) {
-            fprintf(stderr, "pthread_create: %s\n", strerror(error));
-            for (int j = 0; j < i; j++) {
-                pthread_join(hilos[j], NULL);
-            }
-            pthread_mutex_destroy(&contador.mutex);
-            return EXIT_FAILURE;
+    counter.count = 0;
+    pthread_mutex_init(&counter.count_mutex, NULL);
+    printf("Main: el contador esperado es %s%u%s\n", GREEN,
+           NUM_THREADS * TIMES_TO_COUNT, NC);
+
+    for (int i = 0; i < NUM_THREADS; i++) {
+        if (pthread_create(&tid[i], NULL, thread_routine, &counter) != 0) {
+            return 1;
         }
+        printf("Main: Creando el thread %d [%lu]\n", i + 1,
+               (unsigned long)tid[i]);
     }
-    for (int i = 0; i < NUM_HILOS; i++) {
-        pthread_join(hilos[i], NULL);
+    for (int i = 0; i < NUM_THREADS; i++) {
+        pthread_join(tid[i], NULL);
+        printf("Main: adiciona el thread %d [%lu]\n", i + 1,
+               (unsigned long)tid[i]);
     }
-    clock_gettime(CLOCK_MONOTONIC, &fin);
 
-    const unsigned int esperado = NUM_HILOS * VECES_POR_HILO;
-    printf("Contador final: %u | Esperado: %u\n", contador.cuenta, esperado);
-    printf("Tiempo de ejecución: %.6f segundos\n", segundos_transcurridos(inicio, fin));
-    printf("Verificación: %s\n", contador.cuenta == esperado ? "CORRECTA" : "ERROR");
-    pthread_mutex_destroy(&contador.mutex);
-    return contador.cuenta == esperado ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (counter.count != (NUM_THREADS * TIMES_TO_COUNT)) {
+        printf("%sMain: ERROR ! Total contador es %u%s\n", RED, counter.count, NC);
+    } else {
+        printf("%sMain: OK. Total contador es %u%s\n", GREEN, counter.count, NC);
+    }
+    pthread_mutex_destroy(&counter.count_mutex);
+    return 0;
 }

@@ -1,70 +1,39 @@
-#include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <stdio.h>
+#include <pthread.h>
 
-#define NUM_HILOS 10
-#define INCREMENTOS 10000000
+#define NUM_THREADS 10
 
-static int correos = 0;
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+int mails = 0;
+pthread_mutex_t mutex;
 
-typedef struct {
-    int numero;
-} trabajo_t;
-
-static void *incrementar(void *arg)
+void *routine(void *arg)
 {
-    const trabajo_t *trabajo = arg;
-    printf("[Hilo %d | ID %lu] Inicia %d incrementos.\n", trabajo->numero,
-           (unsigned long)pthread_self(), INCREMENTOS);
-    for (int i = 0; i < INCREMENTOS; i++) {
+    (void)arg;
+    for (int i = 0; i < 10000000; i++) {
         pthread_mutex_lock(&mutex);
-        correos++;
+        mails++;
         pthread_mutex_unlock(&mutex);
     }
-    printf("[Hilo %d] Trabajo finalizado.\n", trabajo->numero);
     return NULL;
-}
-
-static double segundos_transcurridos(struct timespec inicio, struct timespec fin)
-{
-    return (fin.tv_sec - inicio.tv_sec) +
-           (fin.tv_nsec - inicio.tv_nsec) / 1000000000.0;
 }
 
 int main(void)
 {
-    pthread_t hilos[NUM_HILOS];
-    trabajo_t trabajos[NUM_HILOS];
-    struct timespec inicio, fin;
+    pthread_t threads[NUM_THREADS];
 
-    puts("=== Ejercicio 3: diez threads con contador de correos protegido ===");
-    printf("Threads: %d | Incrementos por hilo: %d | Total esperado: %d\n",
-           NUM_HILOS, INCREMENTOS, NUM_HILOS * INCREMENTOS);
-    clock_gettime(CLOCK_MONOTONIC, &inicio);
-    for (int i = 0; i < NUM_HILOS; i++) {
-        trabajos[i] = (trabajo_t){.numero = i + 1};
-        int error = pthread_create(&hilos[i], NULL, incrementar, &trabajos[i]);
-        if (error != 0) {
-            fprintf(stderr, "pthread_create: %s\n", strerror(error));
-            for (int j = 0; j < i; j++) {
-                pthread_join(hilos[j], NULL);
-            }
-            pthread_mutex_destroy(&mutex);
-            return EXIT_FAILURE;
+    pthread_mutex_init(&mutex, NULL);
+    for (int i = 0; i < NUM_THREADS; i++) {
+        if (pthread_create(&threads[i], NULL, routine, NULL) != 0) {
+            return i + 1;
         }
     }
-    for (int i = 0; i < NUM_HILOS; i++) {
-        pthread_join(hilos[i], NULL);
+    for (int i = 0; i < NUM_THREADS; i++) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            return NUM_THREADS + i + 1;
+        }
     }
-    clock_gettime(CLOCK_MONOTONIC, &fin);
-
-    const int esperado = NUM_HILOS * INCREMENTOS;
-    printf("Número de correos: %d | Esperado: %d\n", correos, esperado);
-    printf("Tiempo de ejecución: %.6f segundos\n", segundos_transcurridos(inicio, fin));
-    printf("Verificación: %s\n", correos == esperado ? "CORRECTA" : "ERROR");
     pthread_mutex_destroy(&mutex);
-    return correos == esperado ? EXIT_SUCCESS : EXIT_FAILURE;
+    printf("Numero de mails: %d\n", mails);
+    return 0;
 }
